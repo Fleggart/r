@@ -23,7 +23,7 @@ base {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)  // 从 25 降为 21，更稳定
+        languageVersion = JavaLanguageVersion.of(25)  // 从 25 降为 21，更稳定
     }
     if (generate_sources_jar.toBoolean()) {
         withSourcesJar()

@@ -23,7 +23,7 @@ base {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(25)  
+        languageVersion = JavaLanguageVersion.of(25)
     }
     if (generate_sources_jar.toBoolean()) {
         withSourcesJar()
@@ -107,41 +107,12 @@ processResources {
     rename '(.+_at.cfg)', 'META-INF/$1'
 }
 
-idea {
-    module {
-        inheritOutputDirs = true
-    }
-    project {
-        settings {
-            runConfigurations {
-                '1. Build'(Gradle) {
-                    taskNames = ["build"]
-                }
-                '2. Run Client'(Gradle) {
-                    taskNames = ["runClient"]
-                }
-                '3. Run Server'(Gradle) {
-                    taskNames = ["runServer"]
-                }
-            }
-            compiler.javac {
-                afterEvaluate {
-                    javacAdditionalOptions = '-encoding utf8'
-                    moduleJavacAdditionalOptions = [
-                            (project.name + '.main'): tasks.compileJava.options.compilerArgs.collect { "\"${it}\"" }.join(' ')
-                    ]
-                }
-            }
-        }
-    }
-}
-
 if (!enable_shadow.toBoolean()) {
     shadowJar.enabled = false
 }
 
 compileJava {
-    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_25
+    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_21
 }
 
 jar {
@@ -175,13 +146,11 @@ jar {
     finalizedBy(tasks.named(remapTaskName).get())
 }
 
-
 shadowJar {
     //noinspection GroovyAssignabilityCheck,GroovyAccessibility
     configurations = [project.configurations.shadow]
     archiveClassifier = "shadow"
 }
-
 
 tasks.named(remapTaskName).configure {
     doFirst {
@@ -193,7 +162,7 @@ tasks.named(remapTaskName).configure {
 }
 
 compileTestJava {
-    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_22
+    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_21
 }
 
 test {
@@ -206,10 +175,6 @@ test {
             showStandardStreams = true
         }
     }
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
 }
 
 apply from: 'gradle/scripts/publishing.gradle'

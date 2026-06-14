@@ -2,7 +2,6 @@ plugins {
     id 'java'
     id 'java-library'
     id 'maven-publish'
-    id 'com.gradleup.shadow' version '9.4.1'
     id 'xyz.wagyourtail.unimined' version '1.4.18-kappa'
 }
 
@@ -39,8 +38,6 @@ configurations {
     runtimeOnly.extendsFrom(modRuntimeOnly)
 }
 
-def remapTaskName = enable_shadow.toBoolean() ? "remapShadowJar" : "remapJar"
-
 unimined.minecraft {
     version "1.12.2"
 
@@ -52,7 +49,7 @@ unimined.minecraft {
         if (use_access_transformer.toBoolean()) {
             accessTransformer "${rootProject.projectDir}/src/main/resources/$access_transformer_locations"
         }
-        loader "0.5.12-alpha"
+        loader "0.5.14-alpha"
         runs.all {
             args += ['--username', minecraft_username]
             def extraArgs = extra_jvm_args
@@ -72,9 +69,7 @@ unimined.minecraft {
 
     defaultRemapJar = false
 
-    String jarTaskName = enable_shadow.toBoolean() ? "shadowJar" : "jar"
-
-    remap(tasks.named(jarTaskName).get()) {
+    remap(tasks.jar) {
         mixinRemap {
             enableBaseMixin()
             enableMixinExtra()
@@ -102,10 +97,6 @@ apply from: 'gradle/scripts/dependencies.gradle'
 
 processResources {
     rename '(.+_at.cfg)', 'META-INF/$1'
-}
-
-if (!enable_shadow.toBoolean()) {
-    shadowJar.enabled = false
 }
 
 compileJava {
@@ -140,22 +131,7 @@ jar {
             attributes(attribute_map)
         }
     }
-    finalizedBy(tasks.named(remapTaskName).get())
-}
-
-shadowJar {
-    //noinspection GroovyAssignabilityCheck,GroovyAccessibility
-    configurations = [project.configurations.shadow]
-    archiveClassifier = "shadow"
-}
-
-tasks.named(remapTaskName).configure {
-    doFirst {
-        logging.captureStandardOutput LogLevel.INFO
-    }
-    doLast {
-        logging.captureStandardOutput LogLevel.QUIET
-    }
+    finalizedBy(tasks.remapJar)
 }
 
 compileTestJava {

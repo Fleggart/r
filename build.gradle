@@ -148,5 +148,3 @@ test {
         }
     }
 }
-
-apply from: 'gradle/scripts/extra.gradle'

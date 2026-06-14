@@ -22,9 +22,6 @@ java {
     if (generate_sources_jar.toBoolean()) {
         withSourcesJar()
     }
-    if (generate_javadocs_jar.toBoolean()) {
-        withJavadocJar()
-    }
 }
 
 configurations {
@@ -85,10 +82,6 @@ dependencies {
     if (use_asset_mover.toBoolean()) {
         implementation "com.cleanroommc:assetmover:${asset_mover_version}"
     }
-    if (enable_junit_testing.toBoolean()) {
-        testImplementation 'org.junit.jupiter:junit-jupiter:6.0.3'
-        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    }
 }
 
 apply from: 'gradle/scripts/dependencies.gradle'
@@ -130,20 +123,4 @@ jar {
         }
     }
     finalizedBy(tasks.remapJar)
-}
-
-compileTestJava {
-    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_25
-}
-
-test {
-    useJUnitPlatform()
-    javaLauncher.set(javaToolchains.launcherFor {
-        languageVersion = JavaLanguageVersion.of(25)
-    })
-    if (show_testing_output.toBoolean()) {
-        testLogging {
-            showStandardStreams = true
-        }
-    }
 }

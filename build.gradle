@@ -3,11 +3,8 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'com.gradleup.shadow' version '9.4.1'
-    id 'org.jetbrains.gradle.plugin.idea-ext' version '1.4.1'
     id 'xyz.wagyourtail.unimined' version '1.4.18-kappa'
 }
-
-import org.jetbrains.gradle.ext.Gradle
 
 ext {
     //noinspection GroovyAssignabilityCheck
@@ -112,7 +109,7 @@ if (!enable_shadow.toBoolean()) {
 }
 
 compileJava {
-    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_25
 }
 
 jar {
@@ -162,7 +159,7 @@ tasks.named(remapTaskName).configure {
 }
 
 compileTestJava {
-    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_25
 }
 
 test {

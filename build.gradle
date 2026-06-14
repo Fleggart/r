@@ -141,7 +141,7 @@ if (!enable_shadow.toBoolean()) {
 }
 
 compileJava {
-    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_25
 }
 
 jar {
@@ -193,7 +193,7 @@ tasks.named(remapTaskName).configure {
 }
 
 compileTestJava {
-    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_21  // 与主代码保持一致
+    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_22
 }
 
 test {

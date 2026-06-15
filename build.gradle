@@ -4,6 +4,7 @@ plugins {
 }
 
 ext {
+    //noinspection GroovyAssignabilityCheck
     access_transformer_locations = "${mod_id}_at.cfg"
 }
 
@@ -17,9 +18,6 @@ base {
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(25)
-    }
-    if (generate_sources_jar.toBoolean()) {
-        withSourcesJar()
     }
 }
 

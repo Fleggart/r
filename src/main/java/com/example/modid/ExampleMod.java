@@ -59,13 +59,17 @@ public class ExampleMod {
                 LOGGER.info("[SKIP] Test 2: No world loaded yet (this is normal during preInit)");
             }
 
-            // 测试3：测试方法调用重映射
+            // 测试3：测试 Session 对象的方法调用重映射（只使用确实存在的方法）
             String username = mc.getSession().getUsername();
             LOGGER.info("[PASS] Test 3: Successfully called method via MCP mapping: getUsername() = {}", username);
 
-            // 测试4：测试另一个方法调用
-            String serverBrand = mc.getSession().getServerBrand();
-            LOGGER.info("[PASS] Test 4: Successfully called method via MCP mapping: getServerBrand() = {}", serverBrand);
+            // 测试4：测试玩家对象（如果可用）
+            if (mc.player != null) {
+                String playerName = mc.player.getName();
+                LOGGER.info("[PASS] Test 4: Successfully accessed player: {}", playerName);
+            } else {
+                LOGGER.info("[SKIP] Test 4: No player available yet (this is normal during preInit)");
+            }
 
             LOGGER.info("---------- All tests completed! ----------");
             LOGGER.info("If you see [PASS] messages above, remapping is WORKING CORRECTLY!");

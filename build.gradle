@@ -4,7 +4,6 @@ plugins {
 }
 
 ext {
-    //noinspection GroovyAssignabilityCheck
     access_transformer_locations = "${mod_id}_at.cfg"
 }
 

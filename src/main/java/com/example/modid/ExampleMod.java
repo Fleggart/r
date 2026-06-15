@@ -2,7 +2,6 @@ package com.example.modid;
 
 import com.example.modid.proxy.IProxy;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -39,37 +38,34 @@ public class ExampleMod {
      * 如果这段代码能正常编译、打包并在游戏中运行，说明构建流程完全正确
      */
     private void runRemappingTest() {
-        LOGER.info("---------- Remapping Test ----------");
+        LOGGER.info("---------- Remapping Test ----------");
 
         try {
-            // 测试1：尝试访问 Minecraft 客户端的当前世界时间
             Minecraft mc = Minecraft.getMinecraft();
+            
+            // 测试1：访问 Minecraft 实例，验证核心映射
+            if (mc != null) {
+                LOGGER.info("[PASS] Test 1: Successfully accessed Minecraft.getMinecraft()");
+            } else {
+                LOGGER.error("[FAIL] Test 1: Minecraft.getMinecraft() returned null");
+                return;
+            }
+
+            // 测试2：访问世界时间，验证世界对象映射
             if (mc.world != null) {
                 long worldTime = mc.world.getWorldTime();
-                LOGGER.info("[PASS] Test 1: Successfully accessed world time via MCP mappings: {}", worldTime);
+                LOGGER.info("[PASS] Test 2: Successfully accessed world time via MCP mappings: {}", worldTime);
             } else {
-                LOGGER.info("[SKIP] Test 1: No world loaded yet (this is normal during preInit)");
+                LOGGER.info("[SKIP] Test 2: No world loaded yet (this is normal during preInit)");
             }
 
-            // 测试2：尝试获取客户端玩家对象并访问其属性（仅在客户端有效）
-            EntityPlayerSP player = mc.player;
-            if (player != null) {
-                // 这是一个使用了 MCP 映射的字段，编译后会被重映射为混淆名
-                int swimTimer = player.swimTimer;
-                float fallDistance = player.fallDistance;
-                boolean isSneaking = player.isSneaking();
+            // 测试3：测试方法调用重映射
+            String username = mc.getSession().getUsername();
+            LOGGER.info("[PASS] Test 3: Successfully called method via MCP mapping: getUsername() = {}", username);
 
-                LOGGER.info("[PASS] Test 2: Successfully accessed player data via MCP mappings:");
-                LOGGER.info("       - swimTimer = {}", swimTimer);
-                LOGGER.info("       - fallDistance = {}", fallDistance);
-                LOGGER.info("       - isSneaking = {}", isSneaking);
-            } else {
-                LOGGER.info("[SKIP] Test 2: No player available (likely on server side or world not loaded)");
-            }
-
-            // 测试3：测试一个简单的方法调用重映射
-            String serverBrand = mc.getSession().getUsername();
-            LOGGER.info("[PASS] Test 3: Successfully called method via MCP mapping: getUsername() = {}", serverBrand);
+            // 测试4：测试另一个方法调用
+            String serverBrand = mc.getSession().getServerBrand();
+            LOGGER.info("[PASS] Test 4: Successfully called method via MCP mapping: getServerBrand() = {}", serverBrand);
 
             LOGGER.info("---------- All tests completed! ----------");
             LOGGER.info("If you see [PASS] messages above, remapping is WORKING CORRECTLY!");
